@@ -6,6 +6,8 @@ __pycache__/
 *.wmv
 # C extensions
 *.so
+.idea
+venv
 
 # Distribution / packaging
 .Python
