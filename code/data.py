@@ -36,6 +36,18 @@ class Data:
 # test code
 my_data = Data()
 # print(my_data.values)
-f = my_data.values[:, 16]
+"""
+a = []
+for i in range(len(my_data.values)):
+    a1 = int(my_data.values[i, 10])
+    a2 = int(my_data.values[i, 11])
+    a3 = int(my_data.values[i, 12])
+    a.append(a1 * a2 * a3 / 1000)
+
+a = set(a)
+print(a)
+print(len(a))
+"""
+# 620种体积的箱子
 # print(f)
 # print(len(set(f)))
