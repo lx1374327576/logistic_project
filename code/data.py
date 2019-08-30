@@ -1,4 +1,5 @@
 import pandas as pd
+import math
 
 
 class Data:
@@ -36,7 +37,25 @@ class Data:
         df = pd.read_excel(input_file2, sheet_name=0)
         self.pos = df.values
 
-    # 返回供应商坐标和产品信息
+    # 按照经纬度计算实际曼哈顿距离
+    def get_dis(self, x1, y1, x2, y2):
+
+        # 地球半径
+        r = 6378.137
+        # 圆周率
+        # pi = 3.1415926
+        pi = math.pi
+
+        # 计算经度距离
+        d1 = abs(y1 - y2) / 180 * pi * r
+
+        # 计算纬度距离
+        r_new = r * math.cos((y1 + y2) / 2 / 180 * pi)
+        d2 = abs(x1 - x2) / 180 * pi * r_new
+
+        return d1 + d2
+
+    # 返回经纬度, 距离矩阵和产品信息
     def get_info(self):
 
         # x 经度 y 纬度
@@ -62,7 +81,15 @@ class Data:
 
         # info 第一维供应商 第二维对应零件集合
         #      第三维零件信息 0 零件号 1 长 2 宽 3 高 4 装箱数 5 每车用量 6 频数
-        return x, y, info
+
+        # dis[i, j]代表i到j的曼哈顿距离，与info中的一一对应
+        dis = []
+        for i in range(len(self.pos)):
+            tmp = []
+            for j in range(len(self.pos)):
+                tmp.append(self.get_dis(x[i], y[i], x[j], y[j]))
+            dis.append(tmp)
+        return x, y, dis, info
 
 
 # test code
@@ -83,7 +110,9 @@ class Data:
 # print(f)
 # print(len(set(f)))
 # print(my_data.pos)
-# x, y, info = my_data.get_info()
+# x, y, dis, info = my_data.get_info()
 # print(x)
 # print(y)
 # print(info)
+# print(dis)
+# print(len(x), len(y), len(dis), len(info))
