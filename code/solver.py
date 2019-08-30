@@ -76,10 +76,84 @@ class Solver:
         res.total_car_fre = total_car_fre
         return res
 
+    # 节约里程法 简单体积 以里程为代价 不管频次
+    def get_saveDis_simpleV_mileageCost_noFre(self):
+
+        total_dis_tmp = 0
+        total_car_fre = 0
+        per_car = self.car_x * self.car_y * self.car_z * self.car_coe
+
+        left = []
+        for i in range(self.pro_num):
+            dis = self.my_data.get_dis(x1=self.machine_x, y1=self.machine_y, x2=self.x[i], y2=self.y[i])
+            now_set = self.info[i]
+            total_v = 0
+            for part in now_set:
+                total_v += part[1] / 1000 * part[2] / 1000 * part[3] / 1000 * self.car_num * part[5] / part[4]
+            total_car_fre += math.floor(total_v / per_car)
+            left.append(total_v - math.floor(total_v / per_car) * per_car)
+            total_dis_tmp += dis * 2 * math.floor(total_v / per_car)
+        mid_dis = total_dis_tmp
+
+        tag = []
+        for i in range(self.pro_num):
+            tag.append(0)
+        for i in range(self.pro_num):
+            max_v = 0
+            now = -1
+            tmp_v = per_car
+            for j in range(self.pro_num):
+                if tag[j] == 0 and left[j] > max_v:
+                    now = j
+                    max_v = left[j]
+            if now == -1:
+                break
+
+            tmp_v -= max_v
+            left[now] = 0
+            tag[now] = 1
+            tmp_dis = self.my_data.get_dis(x1=self.machine_x, y1=self.machine_y, x2=self.x[now], y2=self.y[now])
+            # pri = []
+            # pri.append(tmp_dis)
+            while tmp_v > 0:
+                min_d = 100000000000
+                now_tmp = -1
+                for j in range(self.pro_num):
+                    if tag[j] == 0 and self.dis[now][j] < min_d and tmp_v >= left[j]:
+                        now_tmp = j
+                        min_d = self.dis[now][j]
+                if now_tmp == -1:
+                    break
+                tmp_dis += min_d
+                # pri.append(min_d)
+                if left[now_tmp] > tmp_v:
+                    tmp_v = 0
+                    left[now_tmp] -= tmp_v
+                else:
+                    tmp_v -= left[now_tmp]
+                    left[now_tmp] = 0
+                    tag[now_tmp] = 1
+                now = now_tmp
+            tmp_dis += self.my_data.get_dis(x1=self.machine_x, y1=self.machine_y, x2=self.x[now], y2=self.y[now])
+            # pri.append(self.my_data.get_dis(x1=self.machine_x, y1=self.machine_y, x2=self.x[now], y2=self.y[now]))
+            # print(pri)
+            total_dis_tmp += tmp_dis
+            total_car_fre += 1
+
+        res = result.Result()
+        res.total_dis = total_dis_tmp
+        res.total_car_fre = total_car_fre
+        res.mid_dis = mid_dis
+        return res
+
 
 # test code
-# sol = Solver()
-# res = sol.get_trad_simpleV_mileageCost_noFre()
-# print(res.total_dis)
+sol = Solver()
+res1 = sol.get_trad_simpleV_mileageCost_noFre()
+print('传统算法', res1.total_dis)
 # print(res.total_car_fre)
-
+res2 = sol.get_saveDis_simpleV_mileageCost_noFre()
+print('节约里程法', res2.total_dis)
+print('节约百分数', (res1.total_dis-res2.total_dis)/res1.total_dis)
+print('实际节约百分数', (res1.total_dis-res2.total_dis)/(res1.total_dis - res2.mid_dis))
+# print(res.total_car_fre)
