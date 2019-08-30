@@ -148,12 +148,12 @@ class Solver:
 
 
 # test code
-sol = Solver()
-res1 = sol.get_trad_simpleV_mileageCost_noFre()
-print('传统算法', res1.total_dis)
+# sol = Solver()
+# res1 = sol.get_trad_simpleV_mileageCost_noFre()
+# print('传统算法', res1.total_dis)
 # print(res.total_car_fre)
-res2 = sol.get_saveDis_simpleV_mileageCost_noFre()
-print('节约里程法', res2.total_dis)
-print('节约百分数', (res1.total_dis-res2.total_dis)/res1.total_dis)
-print('实际节约百分数', (res1.total_dis-res2.total_dis)/(res1.total_dis - res2.mid_dis))
+# res2 = sol.get_saveDis_simpleV_mileageCost_noFre()
+# print('节约里程法', res2.total_dis)
+# print('节约百分数', (res1.total_dis-res2.total_dis)/res1.total_dis)
+# print('实际节约百分数', (res1.total_dis-res2.total_dis)/(res1.total_dis - res2.mid_dis))
 # print(res.total_car_fre)
