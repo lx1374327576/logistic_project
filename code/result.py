@@ -7,3 +7,6 @@ class Result:
 
         # 总车次
         self.total_car_fre = None
+
+        # 中段总里程
+        self.mid_dis = None
