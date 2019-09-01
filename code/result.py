@@ -10,3 +10,6 @@ class Result:
 
         # 中段总里程
         self.mid_dis = None
+
+        # 运输路线方案
+        self.car_plan = None
