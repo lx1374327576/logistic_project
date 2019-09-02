@@ -37,6 +37,14 @@ class Data:
         df = pd.read_excel(input_file2, sheet_name=0)
         self.pos = df.values
 
+        id_to_address = []
+        for i in range(len(self.pos)):
+            for j in range(len(self.values)):
+                if self.pos[i, 0] == self.values[j, 2]:
+                    id_to_address.append([self.values[j, 4], self.values[j, 5]])
+                    break
+        self.id_to_address = id_to_address
+
     # 按照经纬度计算实际曼哈顿距离
     def get_dis(self, x1, y1, x2, y2):
 
@@ -116,3 +124,5 @@ class Data:
 # print(info)
 # print(dis)
 # print(len(x), len(y), len(dis), len(info))
+# my_data = Data()
+# print(len(my_data.id_to_address))
