@@ -156,6 +156,8 @@ class Solver:
         duetime_map = [[0], [0, 4], [0, 2, 4], [0, 2, 4, 5], [0, 2, 3, 4, 5], [0, 1, 2, 3, 4, 5]]
         start_point = 0
         car_plan = []
+        plan_timezone = []
+        plan_timepoint = []
         total_dis_tmp = 0
         total_car_fre = 0
 
@@ -179,6 +181,10 @@ class Solver:
             car_route = [i]
             for j in range(per_car_number):
                 car_plan.append(car_route)
+                time_tmp = self.my_data.get_dis(x1=self.machine_x, y1=self.machine_y, x2=self.x[i],
+                                                y2=self.y[i]) / avg_v
+                plan_timezone.append(2 * (time_tmp + avg_loading_time))
+                plan_timepoint.append([time_tmp, 2*time_tmp + avg_loading_time])
             total_car_fre += per_car_number
             total_dis_tmp += 2 * per_car_number * self.my_data.get_dis(x1=self.machine_x, y1=self.machine_y,
                                                                        x2=self.x[i], y2=self.y[i])
@@ -226,6 +232,7 @@ class Solver:
             tmp_time = avg_loading_time
             tmp_dis = 0
             plan = []
+            tmp_plan_timepoint = []
             # 选最大的
             max_v = 0
             min_dis_point_j = -1
@@ -240,6 +247,7 @@ class Solver:
                 break
             tmp_time += self.my_data.get_dis(x1=self.machine_x, y1=self.machine_y, x2=self.x[min_dis_point_j],
                                              y2=self.y[min_dis_point_j]) / avg_v + avg_loading_time
+            tmp_plan_timepoint.append(tmp_time - 2 * avg_loading_time)
             tmp_v -= left[min_dis_point_j][min_dis_point_k]
             tag[min_dis_point_j][min_dis_point_k] = 1
             left[min_dis_point_j][min_dis_point_k] = 0
@@ -265,6 +273,7 @@ class Solver:
                 if min_dis_point_j == -1:
                     break
                 tmp_time += min_dis / avg_v + avg_loading_time
+                tmp_plan_timepoint.append(tmp_time - 2 * avg_loading_time)
                 now_point = min_dis_point_j
                 if duetime_point[min_dis_point_k] < due_time:
                     due_time = duetime_point[min_dis_point_k]
@@ -275,12 +284,15 @@ class Solver:
                 tmp_dis += min_dis
             tmp_time += self.my_data.get_dis(x1=self.machine_x, y1=self.machine_y, x2=self.x[now_point],
                                              y2=self.y[now_point]) / avg_v
+            tmp_plan_timepoint.append(tmp_time - avg_loading_time)
             tmp_dis += self.my_data.get_dis(x1=self.machine_x, y1=self.machine_y, x2=self.x[now_point],
                                             y2=self.y[now_point])
             # print(tmp_dis)
             total_dis_tmp += tmp_dis
             total_car_fre += 1
             car_plan.append(plan)
+            plan_timezone.append(tmp_time)
+            plan_timepoint.append(tmp_plan_timepoint)
 
         # print(tag)
         # print(car_plan)
@@ -290,6 +302,8 @@ class Solver:
         res.total_car_fre = total_car_fre
         res.mid_dis = mid_dis
         res.car_plan = car_plan
+        res.plan_timezone = plan_timezone
+        res.plan_timepoint = plan_timepoint
         return res
 
     # 节约里程库存法 简单体积 以里程和库存为代价(不允许缺货) 管频次/时间窗
