@@ -106,10 +106,10 @@ class Solution:
 
 
 # test code
-test_solver = solver.Solver()
-test_data = data.Data()
-test_result = test_solver.get_saveDis_simpleV_mileageCost_Fre()
-test_solution = Solution(test_result, test_data)
-# print(test_solution.result.plan_timezone)
-test_solution.sol_balance_mileageCost()
-test_solution.print_to_txt('car_solution.txt')
+# test_solver = solver.Solver()
+# test_data = data.Data()
+# test_result = test_solver.get_saveDis_simpleV_mileageCost_Fre()
+# test_solution = Solution(test_result, test_data)
+# # print(test_solution.result.plan_timezone)
+# test_solution.sol_balance_mileageCost()
+# test_solution.print_to_txt('car_solution.txt')
