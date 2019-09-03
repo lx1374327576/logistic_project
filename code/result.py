@@ -20,3 +20,6 @@ class Result:
 
         # 运输方案截止时间
         self.plan_duetime = None
+
+        # 运输方案预计库存里程成本
+        self.total_price = None
