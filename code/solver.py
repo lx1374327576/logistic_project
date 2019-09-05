@@ -482,32 +482,32 @@ class Solver:
         res.plan_timezone = plan_timezone
         res.plan_timepoint = plan_timepoint
         # print(total_dis_tmp * disPrice_coe)
-        res.total_price = storage_timePlusV * storagePrice_coe + total_dis_tmp * disPrice_coe
+        res.total_price = storage_timePlusV * storagePrice_coe / 2 + total_dis_tmp * disPrice_coe
         return res
 
 
 # test code
-
-# test for get_trad_simpleV_mileageCost_noFre get_saveDis_simpleV_mileageCost_noFre
-sol = Solver()
-res1 = sol.get_trad_simpleV_mileageCost_noFre()
-print('传统算法', str(res1.total_dis)+'km')
-# print(res.total_car_fre)
-res2 = sol.get_saveDis_simpleV_mileageCost_noFre()
-print('节约里程法', str(res2.total_dis)+'km')
-# print('节约百分数', (res1.total_dis-res2.total_dis)/res1.total_dis)
-# print('实际节约百分数', (res1.total_dis-res2.total_dis)/(res1.total_dis - res2.mid_dis))
-# print(res.total_car_fre)
-#
-# test for get_saveDis_simpleV_mileageCost_Fre
-# sol = Solver()
-res3 = sol.get_saveDis_simpleV_mileageCost_Fre()
-print('节约里程法(考虑时间)', str(res3.total_dis)+'km')
-# print('节约里程法(考虑时间)', str(res3.total_price)+'元')
-# print('节约百分数', (res1.total_dis-res3.total_dis)/res1.total_dis)
-# print('较传统实际节约百分数', (res1.total_dis-res3.total_dis)/(res1.total_dis - res3.mid_dis))
-# print('较节约里程法实际节约百分数', (res2.total_dis-res3.total_dis)/(res2.total_dis - res3.mid_dis))
-# print(res3.total_car_fre)
-res4 = sol.get_saveDisSto_simpleV_mileageStockCost_Fre()
-print('节约库存里程法(考虑时间)', str(res4.total_dis)+'km')
-# print('节约库存里程法(考虑时间)', str(res4.total_price)+'元')
+if __name__ == "__main__":
+    # test for get_trad_simpleV_mileageCost_noFre get_saveDis_simpleV_mileageCost_noFre
+    sol = Solver()
+    res1 = sol.get_trad_simpleV_mileageCost_noFre()
+    print('传统算法', str(res1.total_dis)+'km')
+    # print(res.total_car_fre)
+    res2 = sol.get_saveDis_simpleV_mileageCost_noFre()
+    print('节约里程法', str(res2.total_dis)+'km')
+    # print('节约百分数', (res1.total_dis-res2.total_dis)/res1.total_dis)
+    # print('实际节约百分数', (res1.total_dis-res2.total_dis)/(res1.total_dis - res2.mid_dis))
+    # print(res.total_car_fre)
+    #
+    # test for get_saveDis_simpleV_mileageCost_Fre
+    # sol = Solver()
+    res3 = sol.get_saveDis_simpleV_mileageCost_Fre()
+    print('节约里程法(考虑时间)', str(res3.total_dis)+'km')
+    print('节约里程法(考虑时间)', str(res3.total_price)+'元')
+    # print('节约百分数', (res1.total_dis-res3.total_dis)/res1.total_dis)
+    # print('较传统实际节约百分数', (res1.total_dis-res3.total_dis)/(res1.total_dis - res3.mid_dis))
+    # print('较节约里程法实际节约百分数', (res2.total_dis-res3.total_dis)/(res2.total_dis - res3.mid_dis))
+    # print(res3.total_car_fre)
+    res4 = sol.get_saveDisSto_simpleV_mileageStockCost_Fre()
+    print('节约库存里程法(考虑时间)', str(res4.total_dis)+'km')
+    print('节约库存里程法(考虑时间)', str(res4.total_price)+'元')
