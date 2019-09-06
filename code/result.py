@@ -14,9 +14,10 @@ class Result:
         # 运输路线方案
         self.car_plan = None
 
-        # 运输方案时长 时间点
+        # 运输方案时长 时间点 所取物品体积
         self.plan_timezone = None
         self.plan_timepoint = None
+        self.plan_v = None
 
         # 运输方案截止时间
         self.plan_duetime = None

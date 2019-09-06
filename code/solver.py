@@ -160,6 +160,7 @@ class Solver:
         car_plan = []
         plan_timezone = []
         plan_timepoint = []
+        plan_v = []
         total_dis_tmp = 0
         total_car_fre = 0
         storage_timePlusV = 0
@@ -192,6 +193,7 @@ class Solver:
                 plan_timezone.append(2 * (time_tmp + avg_loading_time))
                 storage_timePlusV -= 2 * (time_tmp + avg_loading_time) * per_car
                 plan_timepoint.append([time_tmp, 2*time_tmp + avg_loading_time])
+                plan_v.append([per_car, 0])
             total_car_fre += per_car_number
             total_dis_tmp += 2 * per_car_number * self.my_data.get_dis(x1=self.machine_x, y1=self.machine_y,
                                                                        x2=self.x[i], y2=self.y[i])
@@ -240,6 +242,7 @@ class Solver:
             tmp_dis = 0
             plan = []
             tmp_plan_timepoint = []
+            tmp_plan_v = []
             # 选最大的
             max_v = 0
             min_dis_point_j = -1
@@ -255,6 +258,7 @@ class Solver:
             tmp_time += self.my_data.get_dis(x1=self.machine_x, y1=self.machine_y, x2=self.x[min_dis_point_j],
                                              y2=self.y[min_dis_point_j]) / avg_v + avg_loading_time
             tmp_plan_timepoint.append(tmp_time - 2 * avg_loading_time)
+            tmp_plan_v.append(left[min_dis_point_j][min_dis_point_k])
             tmp_v -= left[min_dis_point_j][min_dis_point_k]
             tag[min_dis_point_j][min_dis_point_k] = 1
             left[min_dis_point_j][min_dis_point_k] = 0
@@ -285,12 +289,14 @@ class Solver:
                 if duetime_point[min_dis_point_k] < due_time:
                     due_time = duetime_point[min_dis_point_k]
                 tmp_v -= left[min_dis_point_j][min_dis_point_k]
+                tmp_plan_v.append(left[min_dis_point_j][min_dis_point_k])
                 tag[min_dis_point_j][min_dis_point_k] = 1
                 left[min_dis_point_j][min_dis_point_k] = 0
                 plan.append(min_dis_point_j)
                 tmp_dis += min_dis
             tmp_time += self.my_data.get_dis(x1=self.machine_x, y1=self.machine_y, x2=self.x[now_point],
                                              y2=self.y[now_point]) / avg_v
+            tmp_plan_v.append(0)
             tmp_plan_timepoint.append(tmp_time - avg_loading_time)
             tmp_dis += self.my_data.get_dis(x1=self.machine_x, y1=self.machine_y, x2=self.x[now_point],
                                             y2=self.y[now_point])
@@ -300,6 +306,7 @@ class Solver:
             car_plan.append(plan)
             plan_timezone.append(tmp_time)
             plan_timepoint.append(tmp_plan_timepoint)
+            plan_v.append(tmp_plan_v)
             storage_timePlusV -= tmp_time * (per_car - tmp_v)
 
         # print(tag)
@@ -312,6 +319,7 @@ class Solver:
         res.car_plan = car_plan
         res.plan_timezone = plan_timezone
         res.plan_timepoint = plan_timepoint
+        res.plan_v = plan_v
         # print(total_dis_tmp * disPrice_coe)
         res.total_price = storage_timePlusV * storagePrice_coe + total_dis_tmp * disPrice_coe
         return res

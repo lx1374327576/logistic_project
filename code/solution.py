@@ -2,6 +2,8 @@ import math
 import data
 import result
 import solver
+import random
+import numpy as np
 
 
 class Solution:
@@ -43,11 +45,14 @@ class Solution:
 
     # 根据求解方案 生成合适的派车方案
     def sol_balance_mileageCost(self):
+        my_data = data.Data()
+        _, _, _, info = my_data.get_info()
         car_plan = self.result.car_plan
         for plan in car_plan:
             plan.append(-1)
         plan_timezone = self.result.plan_timezone
         plan_timepoint = self.result.plan_timepoint
+        plan_v = self.result.plan_v
         seq = []
         num = len(plan_timepoint)
         for i in range(num):
@@ -86,9 +91,25 @@ class Solution:
             tmp_timezone = 0
             for j in mid_car_plan[i]:
                 for k in range(len(plan_timepoint[j])):
+                    new_set = info[car_plan[j][k]]
+                    tmp_v = plan_v[j][k]
+                    set_len = len(new_set)
+                    p_set = []
+                    tmp_count = 0
+                    while tmp_v > 0:
+                        rand_number = random.randint(0, set_len - 1)
+                        part = new_set[rand_number]
+                        if tmp_v >= part[1] / 1000 * part[2] / 1000 * part[3] / 1000:
+                            tmp_v -= part[1] / 1000 * part[2] / 1000 * part[3] / 1000
+                            p_set.append(part[0])
+                        else:
+                            tmp_count += 1
+                        if tmp_count > 10:
+                            break
                     tmp_car_plan.append([self.get_time(plan_timepoint[j][k] + tmp_timezone),
                                          self.get_name(car_plan[j][k]),
-                                         self.get_address(car_plan[j][k])])
+                                         self.get_address(car_plan[j][k]),
+                                         p_set])
                 tmp_timezone += plan_timezone[j]
             final_car_plan.append(tmp_car_plan)
         self.car_plan = final_car_plan
@@ -100,16 +121,19 @@ class Solution:
         for i in range(num):
             for point in self.car_plan[i]:
                 print(point[0], point[1], point[2], file=f)
+                uniq = np.unique(point[3])
+                for u in uniq:
+                    print('     零件号' + str(u) + '        ' + str(max(1, point[3].count(u))) + '箱', file=f)
             print('', file=f)
             print('------------------------------car ' + str(i+1) + '------------------------------', file=f)
             print('', file=f)
 
 
 # test code
-# test_solver = solver.Solver()
-# test_data = data.Data()
-# test_result = test_solver.get_saveDis_simpleV_mileageCost_Fre()
-# test_solution = Solution(test_result, test_data)
-# # print(test_solution.result.plan_timezone)
-# test_solution.sol_balance_mileageCost()
-# test_solution.print_to_txt('car_solution.txt')
+test_solver = solver.Solver()
+test_data = data.Data()
+test_result = test_solver.get_saveDis_simpleV_mileageCost_Fre()
+test_solution = Solution(test_result, test_data)
+# print(test_solution.result.plan_timezone)
+test_solution.sol_balance_mileageCost()
+test_solution.print_to_txt('car_solution.txt')
