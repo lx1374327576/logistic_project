@@ -2,6 +2,7 @@ import data
 import result
 import math
 import numpy as np
+import copy
 
 
 # 问题解决框架
@@ -36,6 +37,7 @@ class Solver:
         self.car_coe = car_coe
         self.pro_num = pro_num
         self.car_num = car_num
+        self.left = None
 
         if machine_x is None:
             tmp = 0
@@ -51,7 +53,7 @@ class Solver:
                 tmp += y[i]
             self.machine_y = tmp / pro_num
         else:
-            self.machine_y = machine_x
+            self.machine_y = machine_y
 
     # 传统运输方式 简单体积 以里程为代价 不管频次/时间窗
     def get_trad_simpleV_mileageCost_noFre(self):
@@ -174,6 +176,7 @@ class Solver:
             for j in range(6):
                 storage_timePlusV += tmp_per_left[j] * (duetime_point[j] - start_point)
             left.append(tmp_per_left)
+        self.left = copy.deepcopy(left)
         # print(left)
 
         # 一部分直送 直接剔除
@@ -314,13 +317,12 @@ class Solver:
         return res
 
     # 节约里程库存法 简单体积 以里程和库存为代价(不允许缺货) 管频次/时间窗
-    def get_saveDisSto_simpleV_mileageStockCost_Fre(self, storagePrice_coe = 0.042, disPrice_coe = 5.2):
+    def get_saveDisSto_simpleV_mileageStockCost_Fre(self, storagePrice_coe = 0.042, disPrice_coe = 5.2, avg_v=60):
 
         # 设定货车出发时间 0点 工作时间点（8-17） 8 12 10 14 11 9
         # 设定平均装货时间 12分钟/供应商 货车平均时速 60km/h
         # 里程价格系数 5.2元/km 库存价格系数 0.042元/(平方米*小时)
         storage_timePlusV = 0
-        avg_v = 60
         avg_loading_time = 0.333333
         duetime_point = [8, 9, 10, 11, 12, 14]
         duetime_map = [[0], [0, 4], [0, 2, 4], [0, 2, 4, 5], [0, 2, 3, 4, 5], [0, 1, 2, 3, 4, 5]]
@@ -343,6 +345,7 @@ class Solver:
             for j in range(6):
                 storage_timePlusV += tmp_per_left[j] * (duetime_point[j] - start_point)
             left.append(tmp_per_left)
+        self.left = copy.deepcopy(left)
         # print(left)
 
         # 一部分直送 直接剔除
